@@ -3,7 +3,9 @@ package com.webservice;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -19,6 +21,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import com.entity.Timesheet;
+import com.entity.TimesheetRow;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.manager.Resource;
@@ -34,30 +37,47 @@ public class TimesheetService {
 
     /** Persistence entity manager object. */
     @Inject EntityManager em;
+    private Map<Timesheet, List<TimesheetRow>> completeTimesheets = new HashMap<>();
 
     @GET
     @Produces("application/json")
     public Response getTimesheets() {
         String response = null;
         em = Resource.getEntityManager();
-        Query query = em.createQuery("FROM com.entity.Timesheet", Timesheet.class);
-        @SuppressWarnings("unchecked")
-        List<Timesheet> list = query.getResultList();
+        
+        Query tsQuery = em.createQuery("FROM com.entity.Timesheet", Timesheet.class);
+        List<Timesheet> tsList = tsQuery.getResultList();
+        
+        for (Timesheet timesheet : tsList) {
+            Query tsRowQuery = em.createQuery("select t from TimesheetRow t "
+                    + "where t.timesheetId = :id", TimesheetRow.class)
+                    .setParameter("id", timesheet.getTimesheetId());
+            List<TimesheetRow> tsRowList = tsRowQuery.getResultList();
+            completeTimesheets.put(timesheet, tsRowList);
+        }
         em.close();
-        response = list.toString();
+        response = completeTimesheets.toString();
         return Response.ok(response).build();
     }
 
     @GET
-    @Path("{id}")
+    @Path("{timesheetId}")
     @Produces("application/json")
-    public Response getTimesheet(@PathParam("id") int id) {
+    public Response getTimesheet(@PathParam("timesheetId") int timesheetId) {
+        String response = null;
         em = Resource.getEntityManager();
-        Timesheet timesheet = em.find(Timesheet.class, id);
+        Timesheet timesheet = em.find(Timesheet.class, timesheetId); 
+        Query query = em.createQuery("select t from TimesheetRow t "
+                + "where t.timesheetId = :id", TimesheetRow.class)
+                .setParameter("id", timesheetId);
+        List<TimesheetRow> list = query.getResultList();
         if (timesheet == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        return Response.ok(timesheet.toString()).build();
+        em.close();
+        response = timesheet.toString() + "/n" + list.toString();
+
+        return Response.ok(response).build();
     }
 
     @Transactional
