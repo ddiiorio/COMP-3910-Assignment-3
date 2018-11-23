@@ -3,6 +3,7 @@ package com.webservice;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.manager.Resource;
 
+import javafx.util.Pair;
+
 /**
  * Defining REST URI calls for timesheet-related functionality.
  * @author Danny
@@ -46,13 +49,13 @@ public class TimesheetService {
         em = Resource.getEntityManager();
         
         Query tsQuery = em.createQuery("FROM com.entity.Timesheet", Timesheet.class);
-        List<Timesheet> tsList = tsQuery.getResultList();
+        List<Timesheet> tsList = Resource.castList(Timesheet.class, tsQuery.getResultList());
         
         for (Timesheet timesheet : tsList) {
             Query tsRowQuery = em.createQuery("select t from TimesheetRow t "
                     + "where t.timesheetId = :id", TimesheetRow.class)
                     .setParameter("id", timesheet.getTimesheetId());
-            List<TimesheetRow> tsRowList = tsRowQuery.getResultList();
+            List<TimesheetRow> tsRowList = Resource.castList(TimesheetRow.class, tsRowQuery.getResultList());
             completeTimesheets.put(timesheet, tsRowList);
         }
         em.close();
@@ -70,14 +73,16 @@ public class TimesheetService {
         Query query = em.createQuery("select t from TimesheetRow t "
                 + "where t.timesheetId = :id", TimesheetRow.class)
                 .setParameter("id", timesheetId);
-        List<TimesheetRow> list = query.getResultList();
+        List<TimesheetRow> list = Resource.castList(TimesheetRow.class, query.getResultList());
         if (timesheet == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         em.close();
-        response = timesheet.toString() + "/n" + list.toString();
-
-        return Response.ok(response).build();
+        List<Object> test = new ArrayList<>();
+        test.add(timesheet);
+        test.add(list);
+        response = test.toString();
+        return Response.status(200).entity(response).build();
     }
 
     @Transactional
@@ -177,4 +182,6 @@ public class TimesheetService {
         }
         return Response.ok(returnCode).build();
     }
+    
+    
 }

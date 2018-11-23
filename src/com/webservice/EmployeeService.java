@@ -48,8 +48,7 @@ public class EmployeeService {
         String response = null;
         em = Resource.getEntityManager();
         Query query = em.createQuery("FROM com.entity.Employees", Employees.class);
-        @SuppressWarnings("unchecked")
-        List<Employees> list = query.getResultList();
+        List<Employees> list = Resource.castList(Employees.class, query.getResultList());
         em.close();
         response = list.toString();
         return Response.ok(response).build();
