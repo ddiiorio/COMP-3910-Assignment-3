@@ -16,7 +16,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.entity.Employees;
@@ -24,26 +23,32 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.manager.Resource;
 
-@Path("/employeeservice")
+/**
+ * Defining REST URI calls for employee-related functionality.
+ * @author Danny
+ * @version 1.0
+ *
+ */
+@Path("/employees")
 public class EmployeeService {
 
-    @Inject
-    EntityManager em;
+    /** Persistence entity manager object. */
+    @Inject EntityManager em;
 
     @GET
-    @Path("status")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/status")
+    @Produces("application/json")
     public Response getStatus() {
         return Response.ok("{\"status\":\"Running..\"}").build();
     }
 
     @GET
-    @Path("employees")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("application/json")
     public Response getEmployeess() {
         String response = null;
         em = Resource.getEntityManager();
-        Query query = em.createQuery("FROM com.entity.Employees");
+        Query query = em.createQuery("FROM com.entity.Employees", Employees.class);
+        @SuppressWarnings("unchecked")
         List<Employees> list = query.getResultList();
         em.close();
         response = list.toString();
@@ -51,11 +56,11 @@ public class EmployeeService {
     }
 
     @GET
-    @Path("employees/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getEmployees(@PathParam("id") int id) {
+    @Path("{empNumber}")
+    @Produces("application/json")
+    public Response getEmployees(@PathParam("empNumber") int empNumber) {
         em = Resource.getEntityManager();
-        Employees employee = em.find(Employees.class, id);
+        Employees employee = em.find(Employees.class, empNumber);
         if (employee == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
@@ -64,9 +69,9 @@ public class EmployeeService {
 
     @Transactional
     @PUT
-    @Path("employees/{id}")
+    @Path("{empNumber}")
     @Consumes("application/json")
-    public Response updateEmployees(@PathParam("id") int id, String payload) {
+    public Response updateEmployees(@PathParam("empNumber") int empNumber, String payload) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         Employees employee = gson.fromJson(payload, Employees.class);
@@ -74,9 +79,9 @@ public class EmployeeService {
         System.out.println(employee);
         em = Resource.getEntityManager();
         em.getTransaction().begin();
-        Employees entity = em.find(Employees.class, id);
+        Employees entity = em.find(Employees.class, empNumber);
         String returnCode = "";
-        
+
         if (entity == null)
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         try {
@@ -102,17 +107,14 @@ public class EmployeeService {
 
     @Transactional
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("employee")
+    @Consumes("application/json")
+    @Produces("application/json")
     public Response createEmployees(String payload) {
-
         System.out.println("payload - " + payload);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
 
-        // Get Employees Object parsed from JSON string
         Employees employee = gson.fromJson(payload, Employees.class);
         System.out.println(employee);
         String returnCode = "200";
@@ -140,16 +142,16 @@ public class EmployeeService {
 
     @Transactional
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("delete/{id}")
-    public Response deleteEmployees(@PathParam("id") int id) {
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("{empNumber}")
+    public Response deleteEmployees(@PathParam("empNumber") int empNumber) {
         em = Resource.getEntityManager();
         String returnCode = "";
 
         try {
             em.getTransaction().begin();
-            Employees existingEmployees = em.find(Employees.class, id);
+            Employees existingEmployees = em.find(Employees.class, empNumber);
             em.remove(existingEmployees);
             em.getTransaction().commit();
             em.close();
