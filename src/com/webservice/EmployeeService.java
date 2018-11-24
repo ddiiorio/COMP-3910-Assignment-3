@@ -84,7 +84,8 @@ public class EmployeeService {
         if (entity == null)
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         try {
-            entity.setName(employee.getName());
+            entity.setFirstName(employee.getFirstName());
+            entity.setLastName(employee.getLastName());
             entity.setUserName(employee.getUserName());
             entity.setPassword(employee.getPassword());
             entity.setIsAdmin(employee.getIsAdmin());
@@ -92,8 +93,8 @@ public class EmployeeService {
             em.flush();
             em.getTransaction().commit();
             em.close();
-            returnCode = "{" + "\"href\":\"http://localhost:8080/rest/employeeservice/employees/" + employee.getName()
-                    + "\"," + "\"message\":\"Employees successfully edited.\"" + "}";
+            returnCode = "{" + employee.getFirstName() + " " + employee.getLastName()
+                    + "\"," + ":\"Employee successfully edited.\"" + "}";
         } catch (Exception err) {
             err.printStackTrace();
             returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource not created.\"" + "\"developerMessage\":\""
@@ -127,8 +128,8 @@ public class EmployeeService {
             em.getTransaction().commit();
             em.close();
 
-            returnCode = "{" + "\"href\":\"http://localhost:8080/rest/employeeservice/employee/" + employee.getName()
-                    + "\"," + "\"message\":\"New Employees successfully created.\"" + "}";
+            returnCode = "{" + employee.getFirstName() + " " + employee.getLastName()
+                + "\"," + ":\"New Employee successfully created.\"" + "}";
         } catch (Exception err) {
             err.printStackTrace();
             returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource not created.\"" + "\"developerMessage\":\""

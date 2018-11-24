@@ -23,9 +23,13 @@ import com.google.gson.GsonBuilder;
 @Table(name = "employees")
 public class Employees implements Serializable {
 
-    /** The employee's name. */
-    @Column(name = "name")
-    private String name;
+    /** The employee's last name. */
+    @Column(name = "lastName")
+    private String lastName;
+    
+    /** The employee's first name. */
+    @Column(name = "firstName")
+    private String firstName;
     
     /** The employee's login ID. */
     @Column(name = "userName")
@@ -60,23 +64,41 @@ public class Employees implements Serializable {
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
-
+    
     /**
-     * name getter.
+     * last name getter.
      * 
-     * @return the name
+     * @return the last name
      */
-    public String getName() {
-        return name;
+    public String getLastName() {
+        return lastName;
     }
 
     /**
-     * name setter.
+     * last name setter.
      * 
-     * @param name the name to set
+     * @param lastName the last name to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * first name getter.
+     * 
+     * @return the first name
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * first name setter.
+     * 
+     * @param firstName the first name to set
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     /**

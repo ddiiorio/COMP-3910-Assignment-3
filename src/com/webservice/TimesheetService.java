@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.manager.Resource;
 
-import javafx.util.Pair;
 
 /**
  * Defining REST URI calls for timesheet-related functionality.
