@@ -145,8 +145,8 @@ public class TimesheetService {
             em.getTransaction().commit();
             em.close();
 
-            returnCode = "{" + "\"href\":\"http://localhost:8080/rest/timesheetservice/timesheet/" + timesheet.getTimesheetId()
-                    + "\"," + "\"message\":\"New Timesheet successfully created.\"" + "}";
+            returnCode = "{" + timesheet.getTimesheetId()
+                    + "\"," + ":\"New Timesheet successfully created.\"" + "}";
         } catch (Exception err) {
             err.printStackTrace();
             returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource not created.\"" + "\"developerMessage\":\""
