@@ -153,7 +153,7 @@ public class Employees implements Serializable {
     
     @Override
     public String toString() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         String json = gson.toJson(this);  
         return json + "\n";
     }
