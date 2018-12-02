@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -44,7 +45,8 @@ public class EmployeeService {
 
     @GET
     @Produces("application/json")
-    public Response getEmployeess() {
+    public Response getEmployeess(@HeaderParam("token") String token) {
+        
         String response = null;
         em = Resource.getEntityManager();
         Query query = em.createQuery("FROM com.entity.Employees", Employees.class);

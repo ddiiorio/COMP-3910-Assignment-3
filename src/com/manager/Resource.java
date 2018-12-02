@@ -2,7 +2,9 @@ package com.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -43,4 +45,5 @@ public class Resource {
           r.add(class1.cast(o));
         return r;
     }
+   
 }
