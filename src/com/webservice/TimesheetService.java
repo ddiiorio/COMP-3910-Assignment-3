@@ -197,6 +197,15 @@ public class TimesheetService {
         }
         return Response.status(201).entity(returnCode).build();
     }
+    
+    @Transactional
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response createRow(@HeaderParam("token") String token, String payload) {
+        //TODO:Write this method lol
+        return null;
+    }
 
     @Transactional
     @DELETE
