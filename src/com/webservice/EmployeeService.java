@@ -45,7 +45,7 @@ public class EmployeeService {
 
     @GET
     @Produces("application/json")
-    public Response getEmployeess(@HeaderParam("token") String token) {
+    public Response getEmployees(@HeaderParam("token") String token) {
         String response = null;
         Auth auth = AuthenticationService.verifyToken(token);
         if(auth == null) {
@@ -66,7 +66,7 @@ public class EmployeeService {
     @GET
     @Path("{empNumber}")
     @Produces("application/json")
-    public Response getEmployees(@PathParam("empNumber") int empNumber, @HeaderParam("token") String token) {
+    public Response getEmployee(@PathParam("empNumber") int empNumber, @HeaderParam("token") String token) {
         Auth auth = AuthenticationService.verifyToken(token);
         if(auth == null) {
             //failed to authenticate 
