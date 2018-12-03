@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -26,6 +27,8 @@ import com.entity.TimesheetRow;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.manager.Resource;
+
+import javafx.util.Pair;
 
 
 /**
@@ -43,7 +46,15 @@ public class TimesheetService {
 
     @GET
     @Produces("application/json")
-    public Response getTimesheets() {
+    public Response getTimesheets(@HeaderParam("token") String token) {
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate 
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } else if (!auth.isAdmin()) {
+            //user is not admin
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         String response = null;
         em = Resource.getEntityManager();
         
@@ -65,7 +76,12 @@ public class TimesheetService {
     @GET
     @Path("{timesheetId}")
     @Produces("application/json")
-    public Response getTimesheet(@PathParam("timesheetId") int timesheetId) {
+    public Response getTimesheet(@PathParam("timesheetId") int timesheetId, @HeaderParam("token") String token) {
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate or user is not admin
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         String response = null;
         em = Resource.getEntityManager();
         Timesheet timesheet = em.find(Timesheet.class, timesheetId); 
@@ -77,6 +93,10 @@ public class TimesheetService {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         em.close();
+        if(!auth.isAdmin() || auth.getEmpNumber() != timesheet.getEmpNumber()) {
+            //user is not admin, or does not own this timesheet
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         List<Object> test = new ArrayList<>();
         test.add(timesheet);
         test.add(list);
@@ -88,11 +108,21 @@ public class TimesheetService {
     @PUT
     @Path("{timesheetId}")
     @Consumes("application/json")
-    public Response updateTimesheet(@PathParam("timesheetId") int timesheetId, String payload) {
+    public Response updateTimesheet(@PathParam("timesheetId") int timesheetId, @HeaderParam("token") String token, String payload) {
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate or user is not admin
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         Timesheet timesheet = gson.fromJson(payload, Timesheet.class);
 
+        if(timesheet.getEmpNumber() != auth.getEmpNumber()) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        
         System.out.println(timesheet);
         em = Resource.getEntityManager();
         em.getTransaction().begin();
@@ -126,14 +156,25 @@ public class TimesheetService {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response createTimesheet(String payload) {
+    public Response createTimesheet(@HeaderParam("token") String token, String payload) {
         System.out.println("payload - " + payload);
-
+        
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate or user is not admin
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
 
         Timesheet timesheet = gson.fromJson(payload, Timesheet.class);
         System.out.println(timesheet);
+        
+        if(timesheet.getEmpNumber() != auth.getEmpNumber()) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        
         String returnCode = "200";
         em = Resource.getEntityManager();
 
@@ -162,13 +203,21 @@ public class TimesheetService {
     @Consumes("application/json")
     @Produces("application/json")
     @Path("{timesheetId}")
-    public Response deleteTimesheet(@PathParam("timesheetId") int timesheetId) {
+    public Response deleteTimesheet(@PathParam("timesheetId") int timesheetId, @HeaderParam("token") String token) {
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate 
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } 
         em = Resource.getEntityManager();
         String returnCode = "";
-
+        
         try {
             em.getTransaction().begin();
             Timesheet existingTimesheet = em.find(Timesheet.class, timesheetId);
+            if(existingTimesheet.getEmpNumber() != auth.getEmpNumber()) {
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
             em.remove(existingTimesheet);
             em.getTransaction().commit();
             em.close();
