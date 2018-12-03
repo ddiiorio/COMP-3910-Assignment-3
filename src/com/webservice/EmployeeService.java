@@ -46,8 +46,15 @@ public class EmployeeService {
     @GET
     @Produces("application/json")
     public Response getEmployeess(@HeaderParam("token") String token) {
-        
         String response = null;
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate 
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } else if (!auth.isAdmin()) {
+            //user is not admin
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         em = Resource.getEntityManager();
         Query query = em.createQuery("FROM com.entity.Employees", Employees.class);
         List<Employees> list = Resource.castList(Employees.class, query.getResultList());
@@ -59,7 +66,16 @@ public class EmployeeService {
     @GET
     @Path("{empNumber}")
     @Produces("application/json")
-    public Response getEmployees(@PathParam("empNumber") int empNumber) {
+    public Response getEmployees(@PathParam("empNumber") int empNumber, @HeaderParam("token") String token) {
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate 
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } else if (!auth.isAdmin()) {
+            //user is not admin
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        
         em = Resource.getEntityManager();
         Employees employee = em.find(Employees.class, empNumber);
         if (employee == null) {
@@ -72,7 +88,15 @@ public class EmployeeService {
     @PUT
     @Path("{empNumber}")
     @Consumes("application/json")
-    public Response updateEmployees(@PathParam("empNumber") int empNumber, String payload) {
+    public Response updateEmployees(@PathParam("empNumber") int empNumber, String payload, @HeaderParam("token") String token) {
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate 
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } else if (!auth.isAdmin()) {
+            //user is not admin
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         Employees employee = gson.fromJson(payload, Employees.class);
@@ -111,9 +135,16 @@ public class EmployeeService {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response createEmployees(String payload) {
+    public Response createEmployees(String payload, @HeaderParam("token") String token) {
         System.out.println("payload - " + payload);
-
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate 
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } else if (!auth.isAdmin()) {
+            //user is not admin
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
 
@@ -147,7 +178,15 @@ public class EmployeeService {
     @Consumes("application/json")
     @Produces("application/json")
     @Path("{empNumber}")
-    public Response deleteEmployees(@PathParam("empNumber") int empNumber) {
+    public Response deleteEmployees(@PathParam("empNumber") int empNumber, @HeaderParam("token") String token) {
+        Auth auth = AuthenticationService.verifyToken(token);
+        if(auth == null) {
+            //failed to authenticate 
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } else if (!auth.isAdmin()) {
+            //user is not admin
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         em = Resource.getEntityManager();
         String returnCode = "";
 
