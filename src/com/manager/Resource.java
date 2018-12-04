@@ -2,9 +2,7 @@ package com.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -35,14 +33,17 @@ public class Resource {
     
     /**
      * Generic cast class to avoid "unchecked" warnings.
-     * @param class1
-     * @param c
-     * @return Object
+     * @param class1 class type
+     * @param c collection
+     * @param <T> generic type
+     * @return new class object
      */
-    public static <T> List<T> castList(Class<? extends T> class1, Collection<?> c) {
+    public static <T> List<T> castList(Class<? extends T> class1,
+            Collection<?> c) {
         List<T> r = new ArrayList<T>(c.size());
-        for(Object o: c)
+        for (Object o: c) {
           r.add(class1.cast(o));
+        }
         return r;
     }
    

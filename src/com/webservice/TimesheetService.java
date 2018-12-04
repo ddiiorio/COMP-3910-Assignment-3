@@ -41,14 +41,22 @@ import javafx.util.Pair;
 public class TimesheetService {
 
     /** Persistence entity manager object. */
-    @Inject EntityManager em;
-    private Map<Timesheet, List<TimesheetRow>> completeTimesheets = new HashMap<>();
+    @Inject private EntityManager em;
+    
+    /** Map to hold all timesheets in GET request. */
+    private Map<Timesheet, List<TimesheetRow>> completeTimesheets 
+        = new HashMap<>();
 
+    /**
+     * Gets all timesheets in the database.
+     * @param token user token
+     * @return all timesheet data
+     */
     @GET
     @Produces("application/json")
     public Response getTimesheets(@HeaderParam("token") String token) {
         Auth auth = AuthenticationService.verifyToken(token);
-        if(auth == null) {
+        if (auth == null) {
             //failed to authenticate 
             return Response.status(Response.Status.UNAUTHORIZED).build();
         } else if (!auth.isAdmin()) {
@@ -58,27 +66,37 @@ public class TimesheetService {
         String response = null;
         em = Resource.getEntityManager();
         
-        Query tsQuery = em.createQuery("FROM com.entity.Timesheet", Timesheet.class);
-        List<Timesheet> tsList = Resource.castList(Timesheet.class, tsQuery.getResultList());
+        Query tsQuery = em.createQuery("FROM com.entity.Timesheet", 
+                Timesheet.class);
+        List<Timesheet> tsList = Resource.castList(Timesheet.class, 
+                tsQuery.getResultList());
         
         for (Timesheet timesheet : tsList) {
             Query tsRowQuery = em.createQuery("select t from TimesheetRow t "
                     + "where t.timesheetId = :id", TimesheetRow.class)
                     .setParameter("id", timesheet.getTimesheetId());
-            List<TimesheetRow> tsRowList = Resource.castList(TimesheetRow.class, tsRowQuery.getResultList());
+            List<TimesheetRow> tsRowList = Resource.castList(TimesheetRow.class,
+                    tsRowQuery.getResultList());
             completeTimesheets.put(timesheet, tsRowList);
         }
         em.close();
         response = completeTimesheets.toString();
-        return Response.ok(response).build();
+        return Response.status(Response.Status.OK).entity(response).build();
     }
 
+    /**
+     * Gets a single timesheet by ID.
+     * @param timesheetId Timesheet ID
+     * @param token user token
+     * @return single timesheet record
+     */
     @GET
     @Path("{timesheetId}")
     @Produces("application/json")
-    public Response getTimesheet(@PathParam("timesheetId") int timesheetId, @HeaderParam("token") String token) {
+    public Response getTimesheet(@PathParam("timesheetId") int timesheetId,
+            @HeaderParam("token") String token) {
         Auth auth = AuthenticationService.verifyToken(token);
-        if(auth == null) {
+        if (auth == null) {
             //failed to authenticate or user is not admin
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -88,12 +106,14 @@ public class TimesheetService {
         Query query = em.createQuery("select t from TimesheetRow t "
                 + "where t.timesheetId = :id", TimesheetRow.class)
                 .setParameter("id", timesheetId);
-        List<TimesheetRow> list = Resource.castList(TimesheetRow.class, query.getResultList());
+        List<TimesheetRow> list = Resource.castList(TimesheetRow.class,
+                query.getResultList());
         if (timesheet == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
         em.close();
-        if(!auth.isAdmin() || auth.getEmpNumber() != timesheet.getEmpNumber()) {
+        if (!auth.isAdmin() || auth.getEmpNumber() 
+                != timesheet.getEmpNumber()) {
             //user is not admin, or does not own this timesheet
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -101,16 +121,24 @@ public class TimesheetService {
         test.add(timesheet);
         test.add(list);
         response = test.toString();
-        return Response.status(200).entity(response).build();
+        return Response.status(Response.Status.OK).entity(response).build();
     }
 
+    /**
+     * Updates an existing timesheet.
+     * @param timesheetId Timesheet ID
+     * @param token user token
+     * @param payload timesheet data
+     * @return Copy of edited timesheet
+     */
     @Transactional
     @PUT
     @Path("{timesheetId}")
     @Consumes("application/json")
-    public Response updateTimesheet(@PathParam("timesheetId") int timesheetId, @HeaderParam("token") String token, String payload) {
+    public Response updateTimesheet(@PathParam("timesheetId") int timesheetId, 
+            @HeaderParam("token") String token, String payload) {
         Auth auth = AuthenticationService.verifyToken(token);
-        if(auth == null) {
+        if (auth == null) {
             //failed to authenticate or user is not admin
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -119,7 +147,7 @@ public class TimesheetService {
         Gson gson = gsonBuilder.create();
         Timesheet timesheet = gson.fromJson(payload, Timesheet.class);
 
-        if(timesheet.getEmpNumber() != auth.getEmpNumber()) {
+        if (timesheet.getEmpNumber() != auth.getEmpNumber()) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         
@@ -129,8 +157,9 @@ public class TimesheetService {
         Timesheet entity = em.find(Timesheet.class, timesheetId);
         String returnCode = "";
 
-        if (entity == null)
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        if (entity == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
         try {
             entity.setEmpNumber(timesheet.getEmpNumber());
             entity.setEndWeek(timesheet.getEndWeek());
@@ -140,27 +169,38 @@ public class TimesheetService {
             em.flush();
             em.getTransaction().commit();
             em.close();
-            returnCode = "{" + "\"href\":\"http://localhost:8080/rest/timesheetservice/timesheets/" + timesheet.getTimesheetId()
-                    + "\"," + "\"message\":\"Timesheet successfully edited.\"" + "}";
-        } catch (Exception err) {
+            returnCode = "{" + "\"href\":\"http://localhost:8080/rest/"
+                    + "timesheets/" + timesheet.getTimesheetId()
+                    + "\"," + "\"message\":\"Timesheet successfully"
+                            + " edited.\"" + "}";
+        } catch (WebApplicationException err) {
             err.printStackTrace();
-            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource not created.\"" + "\"developerMessage\":\""
+            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource "
+                    + "not created.\"" + "\"developerMessage\":\""
                     + err.getMessage() + "\"" + "}";
-            return Response.status(404).entity(returnCode).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(returnCode).build();
 
         }
-        return Response.status(201).entity(returnCode).build();
+        return Response.status(Response.Status.OK).entity(returnCode).build();
     }
 
+    /**
+     * Creates a new timesheet.
+     * @param token user token
+     * @param payload timesheet data
+     * @return copy of new timesheet
+     */
     @Transactional
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response createTimesheet(@HeaderParam("token") String token, String payload) {
+    public Response createTimesheet(@HeaderParam("token") String token,
+            String payload) {
         System.out.println("payload - " + payload);
         
         Auth auth = AuthenticationService.verifyToken(token);
-        if(auth == null) {
+        if (auth == null) {
             //failed to authenticate or user is not admin
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -171,11 +211,11 @@ public class TimesheetService {
         Timesheet timesheet = gson.fromJson(payload, Timesheet.class);
         System.out.println(timesheet);
         
-        if(timesheet.getEmpNumber() != auth.getEmpNumber()) {
+        if (timesheet.getEmpNumber() != auth.getEmpNumber()) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         
-        String returnCode = "200";
+        String returnCode = "";
         em = Resource.getEntityManager();
 
         try {
@@ -188,33 +228,50 @@ public class TimesheetService {
 
             returnCode = "{" + timesheet.getTimesheetId()
                     + "\"," + ":\"New Timesheet successfully created.\"" + "}";
-        } catch (Exception err) {
+        } catch (WebApplicationException err) {
             err.printStackTrace();
-            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource not created.\"" + "\"developerMessage\":\""
+            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource"
+                    + " not created.\"" + "\"developerMessage\":\""
                     + err.getMessage() + "\"" + "}";
-            return Response.status(404).entity(returnCode).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(returnCode).build();
 
         }
-        return Response.status(201).entity(returnCode).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(returnCode).build();
     }
     
+    /**
+     * Creates a new timesheet row.
+     * @param token user token
+     * @param payload timesheet row data
+     * @return copy of new timesheet row
+     */
     @Transactional
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response createRow(@HeaderParam("token") String token, String payload) {
+    public Response createRow(@HeaderParam("token") String token, 
+            String payload) {
         //TODO:Write this method lol
         return null;
     }
 
+    /**
+     * Deletes a timesheet.
+     * @param timesheetId Timesheet ID
+     * @param token user token
+     * @return Response code
+     */
     @Transactional
     @DELETE
     @Consumes("application/json")
     @Produces("application/json")
     @Path("{timesheetId}")
-    public Response deleteTimesheet(@PathParam("timesheetId") int timesheetId, @HeaderParam("token") String token) {
+    public Response deleteTimesheet(@PathParam("timesheetId") int timesheetId,
+            @HeaderParam("token") String token) {
         Auth auth = AuthenticationService.verifyToken(token);
-        if(auth == null) {
+        if (auth == null) {
             //failed to authenticate 
             return Response.status(Response.Status.UNAUTHORIZED).build();
         } 
@@ -224,21 +281,23 @@ public class TimesheetService {
         try {
             em.getTransaction().begin();
             Timesheet existingTimesheet = em.find(Timesheet.class, timesheetId);
-            if(existingTimesheet.getEmpNumber() != auth.getEmpNumber()) {
+            if (existingTimesheet.getEmpNumber() != auth.getEmpNumber()) {
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
             em.remove(existingTimesheet);
             em.getTransaction().commit();
             em.close();
-            returnCode = "{" + "\"message\":\"Timesheet succesfully deleted\"" + "}";
-        } catch (Exception err) {
+            returnCode = "{" + "\"message\":\"Timesheet succesfully"
+                    + " deleted\"" + "}";
+        } catch (WebApplicationException err) {
             err.printStackTrace();
-            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource not deleted.\"" + "\"developerMessage\":\""
+            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource"
+                    + " not deleted.\"" + "\"developerMessage\":\""
                     + err.getMessage() + "\"" + "}";
-            return Response.status(500).entity(returnCode).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(returnCode).build();
         }
-        return Response.ok(returnCode).build();
+        return Response.status(Response.Status.NO_CONTENT)
+                .entity(returnCode).build();
     }
-    
-    
 }
