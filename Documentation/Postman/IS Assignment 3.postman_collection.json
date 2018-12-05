@@ -1,0 +1,558 @@
+{
+	"info": {
+		"_postman_id": "c8b382d6-ba59-410e-9819-183178093404",
+		"name": "IS Assignment 3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Employees",
+			"item": [
+				{
+					"name": "Get Single Employee",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"employees",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Employees",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"employees",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Employee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lastName\": \"Ham\",\n    \"firstName\": \"Cam\",\n    \"userName\": \"camham\",\n    \"password\": \"pass\",\n    \"isAdmin\": false\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"employees",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Employee",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"lastName\": \"Link\",\n        \"firstName\": \"Bruce\",\n        \"userName\": \"brucel\",\n        \"empNumber\": 3,\n        \"password\": \"pass\",\n        \"isAdmin\": false\n    }"
+						},
+						"url": {
+							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"employees",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Employee",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/5",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"employees",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Timesheets",
+			"item": [
+				{
+					"name": "Get All Timesheets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"timesheets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Timesheet w/ Rows",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"timesheets",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Timesheet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"empNumber\": 2,\n    \"endWeek\": \"Nov 2, 2018\",\n    \"overtime\": 0,\n    \"flextime\": 0,\n    \"timesheetId\": 5\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"timesheets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Timesheet",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"empNumber\": 1,\n        \"endWeek\": \"Nov 18, 2018\",\n        \"overtime\": 0,\n        \"flextime\": 0,\n        \"timesheetId\": 2\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"timesheets",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Timesheet",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"timesheets",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Timesheet Rows",
+			"item": [
+				{
+					"name": "Create Timesheet Row",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"projectId\": 99,\n    \"workPackage\": \"posty\",\n    \"notes\": \"postman roxx\",\n    \"sunHours\": 0,\n    \"monHours\": 2,\n    \"tueHours\": 1,\n    \"wedHours\": 3,\n    \"thuHours\": 1,\n    \"friHours\": 5,\n    \"satHours\": 0,\n    \"timesheetId\": 232\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/row",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"timesheets",
+								"row"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Timesheet Row",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"projectId\": 77,\n    \"workPackage\": \"test\",\n    \"notes\": \"PUT test\",\n    \"sunHours\": 0,\n    \"monHours\": 2,\n    \"tueHours\": 1,\n    \"wedHours\": 3,\n    \"thuHours\": 4,\n    \"friHours\": 5,\n    \"satHours\": 0,\n    \"timesheetId\": 2,\n    \"timesheetRowId\": 102\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/row/102",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"timesheets",
+								"row",
+								"102"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Timesheet Row",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/row/97",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"timesheets",
+								"row",
+								"97"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login + Get Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bb8a925d-e561-46e8-af91-57d050f00ee9",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"token\", jsonData.token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\" : \"tonyp\" ,\n\t\"password\" : \"pass\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/COMP-3910-Assignment-3/rest/auth",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"COMP-3910-Assignment-3",
+						"rest",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
