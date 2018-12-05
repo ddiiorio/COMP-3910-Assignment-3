@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -70,6 +72,7 @@ public class TimesheetRow implements Serializable {
     /** The row ID. */
     @Id
     @Column(name = "timesheet_row_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int timesheetRowId;
 
     /**

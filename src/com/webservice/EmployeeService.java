@@ -18,7 +18,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-import javax.servlet.http.HttpServletResponse;
 
 import com.entity.Employees;
 import com.google.gson.Gson;
@@ -139,9 +138,7 @@ public class EmployeeService {
             em.flush();
             em.getTransaction().commit();
             em.close();
-            returnCode = "{" + employee.getFirstName() + " " 
-                    + employee.getLastName()
-                    + "\"," + ":\"Employee successfully edited.\"" + "}";
+            returnCode = employee.toString();
         } catch (WebApplicationException err) {
             err.printStackTrace();
             returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource"
@@ -191,12 +188,10 @@ public class EmployeeService {
             em.getTransaction().commit();
             em.close();
 
-            returnCode = "{" + employee.getFirstName() + " " 
-            + employee.getLastName()
-                + "\"," + ":\"New Employee successfully created.\"" + "}";
+            returnCode = employee.toString();
         } catch (WebApplicationException err) {
             err.printStackTrace();
-            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource"
+            returnCode = "{\"status\":\"400\"," + "\"message\":\"Resource"
                     + " not created.\"" + "\"developerMessage\":\""
                     + err.getMessage() + "\"" + "}";
             return Response.status(Response.Status.BAD_REQUEST)
@@ -248,6 +243,7 @@ public class EmployeeService {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(returnCode).build();
         }
-        return Response.ok(returnCode).build();
+        return Response.status(Response.Status.NO_CONTENT)
+                .entity(returnCode).build();
     }
 }

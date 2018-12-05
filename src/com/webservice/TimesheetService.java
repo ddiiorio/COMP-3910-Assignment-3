@@ -28,9 +28,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.manager.Resource;
 
-import javafx.util.Pair;
-
-
 /**
  * Defining REST URI calls for timesheet-related functionality.
  * @author Danny
@@ -112,7 +109,7 @@ public class TimesheetService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         em.close();
-        if (!auth.isAdmin() || auth.getEmpNumber() 
+        if (!auth.isAdmin() && auth.getEmpNumber() 
                 != timesheet.getEmpNumber()) {
             //user is not admin, or does not own this timesheet
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -169,13 +166,10 @@ public class TimesheetService {
             em.flush();
             em.getTransaction().commit();
             em.close();
-            returnCode = "{" + "\"href\":\"http://localhost:8080/rest/"
-                    + "timesheets/" + timesheet.getTimesheetId()
-                    + "\"," + "\"message\":\"Timesheet successfully"
-                            + " edited.\"" + "}";
+            returnCode = timesheet.toString();
         } catch (WebApplicationException err) {
             err.printStackTrace();
-            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource "
+            returnCode = "{\"status\":\"400\"," + "\"message\":\"Resource "
                     + "not created.\"" + "\"developerMessage\":\""
                     + err.getMessage() + "\"" + "}";
             return Response.status(Response.Status.BAD_REQUEST)
@@ -226,11 +220,10 @@ public class TimesheetService {
             em.getTransaction().commit();
             em.close();
 
-            returnCode = "{" + timesheet.getTimesheetId()
-                    + "\"," + ":\"New Timesheet successfully created.\"" + "}";
+            returnCode = timesheet.toString();
         } catch (WebApplicationException err) {
             err.printStackTrace();
-            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource"
+            returnCode = "{\"status\":\"400\"," + "\"message\":\"Resource"
                     + " not created.\"" + "\"developerMessage\":\""
                     + err.getMessage() + "\"" + "}";
             return Response.status(Response.Status.BAD_REQUEST)
@@ -242,6 +235,85 @@ public class TimesheetService {
     }
     
     /**
+     * Updates an existing timesheet row.
+     * @param tsRowId Timesheet Row ID
+     * @param token user token
+     * @param payload timesheet row data
+     * @return Copy of edited timesheet row
+     */
+    @Transactional
+    @PUT
+    @Path("/row/{tsRowId}")
+    @Consumes("application/json")
+    public Response updateTimesheetRow(@PathParam("tsRowId") int tsRowId,
+            @HeaderParam("token") String token, String payload) {
+        Auth auth = AuthenticationService.verifyToken(token);
+        if (auth == null) {
+            //failed to authenticate or user is not admin
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        TimesheetRow tsRow = gson.fromJson(payload, TimesheetRow.class);
+        em = Resource.getEntityManager();
+        Timesheet timesheet = em.find(Timesheet.class, tsRow.getTimesheetId());
+
+        if (!auth.isAdmin() && auth.getEmpNumber() 
+                != timesheet.getEmpNumber()) {
+            //user is not admin, or does not own this timesheet
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        em.getTransaction().begin();
+        TimesheetRow entity = em.find(TimesheetRow.class, tsRowId);
+        String returnCode = "";
+
+        if (entity == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        try {
+            entity = tsBuilder(tsRow, entity);
+            em.persist(entity);
+            em.flush();
+            em.getTransaction().commit();
+            em.close();
+            returnCode = tsRow.toString();
+        } catch (WebApplicationException err) {
+            err.printStackTrace();
+            returnCode = "{\"status\":\"400\"," + "\"message\":\"Resource "
+                    + "not created.\"" + "\"developerMessage\":\""
+                    + err.getMessage() + "\"" + "}";
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(returnCode).build();
+
+        }
+        return Response.status(Response.Status.OK).entity(returnCode).build();
+    }
+    
+    /**
+     * Builder method to shorten timesheet row PUT method.
+     * @param tsRow original row
+     * @param entity edited row
+     * @return edited row
+     */
+    private TimesheetRow tsBuilder(TimesheetRow tsRow, TimesheetRow entity) {
+        entity.setProjectId(tsRow.getProjectId());
+        entity.setWorkPackage(tsRow.getWorkPackage());
+        entity.setNotes(tsRow.getNotes());
+        entity.setSunHours(tsRow.getSunHours());
+        entity.setMonHours(tsRow.getMonHours());
+        entity.setTueHours(tsRow.getTueHours());
+        entity.setWedHours(tsRow.getWedHours());
+        entity.setThuHours(tsRow.getThuHours());
+        entity.setFriHours(tsRow.getFriHours());
+        entity.setSatHours(tsRow.getSatHours());
+        entity.setTimesheetId(tsRow.getTimesheetId());
+        entity.setTimesheetRowId(tsRow.getTimesheetRowId());
+        return entity;
+    }
+    
+    /**
      * Creates a new timesheet row.
      * @param token user token
      * @param payload timesheet row data
@@ -249,12 +321,56 @@ public class TimesheetService {
      */
     @Transactional
     @POST
+    @Path("/row")
     @Consumes("application/json")
     @Produces("application/json")
     public Response createRow(@HeaderParam("token") String token, 
             String payload) {
-        //TODO:Write this method lol
-        return null;
+System.out.println("payload - " + payload);
+        
+        Auth auth = AuthenticationService.verifyToken(token);
+        if (auth == null) {
+            //failed to authenticate or user is not admin
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+
+        TimesheetRow tsRow = gson.fromJson(payload, TimesheetRow.class);
+        System.out.println(tsRow);
+        em = Resource.getEntityManager();
+        Timesheet timesheet = em.find(Timesheet.class, tsRow.getTimesheetId());
+        
+        if (!auth.isAdmin() && auth.getEmpNumber() 
+                != timesheet.getEmpNumber()) {
+            //user is not admin, or does not own this timesheet
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        
+        String returnCode = "";
+
+        try {
+            em.getTransaction().begin();
+            em.persist(tsRow);
+            em.flush();
+            em.refresh(tsRow);
+            em.getTransaction().commit();
+            em.close();
+
+            returnCode = tsRow.toString();
+        } catch (WebApplicationException err) {
+            err.printStackTrace();
+            returnCode = "{\"status\":\"400\"," + "\"message\":\"Resource"
+                    + " not created.\"" + "\"developerMessage\":\""
+                    + err.getMessage() + "\"" + "}";
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(returnCode).build();
+
+        }
+        return Response.status(Response.Status.CREATED)
+                .entity(returnCode).build();
     }
 
     /**
@@ -291,10 +407,10 @@ public class TimesheetService {
                     + " deleted\"" + "}";
         } catch (WebApplicationException err) {
             err.printStackTrace();
-            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource"
+            returnCode = "{\"status\":\"404\"," + "\"message\":\"Resource"
                     + " not deleted.\"" + "\"developerMessage\":\""
                     + err.getMessage() + "\"" + "}";
-            return Response.status(Response.Status.BAD_REQUEST)
+            return Response.status(Response.Status.NOT_FOUND)
                     .entity(returnCode).build();
         }
         return Response.status(Response.Status.NO_CONTENT)
