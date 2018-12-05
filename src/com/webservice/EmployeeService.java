@@ -1,8 +1,6 @@
 package com.webservice;
 
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -215,6 +213,11 @@ public class EmployeeService {
                 .entity(returnCode).build();
     }
 
+    /**
+     * Verifies that an employee has all valid fields.
+     * @param e the employee to check
+     * @return true if the employee t is valid
+     */
     private boolean employeeIsValid(Employees e) {
         return e.getFirstName() != null
                 && e.getLastName() != null
