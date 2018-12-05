@@ -9,44 +9,21 @@
 			"name": "Employees",
 			"item": [
 				{
-					"name": "Get Single Employee",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/1",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"COMP-3910-Assignment-3",
-								"rest",
-								"employees",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Get All Employees",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e4129e89-9ebe-43aa-82a7-d2b1a995ef46",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -83,7 +60,72 @@
 					"response": []
 				},
 				{
+					"name": "Get Single Employee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c363b1fc-cc67-433e-81a0-d5848dc9eec2",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"employees",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create Employee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b39b08bc-7cd2-4ca9-9cb1-f88307429bd2",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -121,6 +163,20 @@
 				},
 				{
 					"name": "Edit Employee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8cce8df4-9562-4016-bb52-c4226e90ab5b",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -138,10 +194,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\n        \"lastName\": \"Link\",\n        \"firstName\": \"Bruce\",\n        \"userName\": \"brucel\",\n        \"empNumber\": 3,\n        \"password\": \"pass\",\n        \"isAdmin\": false\n    }"
+							"raw": "{\n    \"lastName\": \"Edited\",\n    \"firstName\": \"Cam\",\n    \"userName\": \"theedits\",\n    \"empNumber\": 4,\n    \"password\": \"pass\",\n    \"isAdmin\": false\n}"
 						},
 						"url": {
-							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/3",
+							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/4",
 							"host": [
 								"localhost"
 							],
@@ -150,7 +206,7 @@
 								"COMP-3910-Assignment-3",
 								"rest",
 								"employees",
-								"3"
+								"4"
 							]
 						}
 					},
@@ -158,6 +214,20 @@
 				},
 				{
 					"name": "Delete Employee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "27091d40-5108-4004-acf8-2c457a13ae2b",
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -178,7 +248,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/5",
+							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/employees/4",
 							"host": [
 								"localhost"
 							],
@@ -187,7 +257,7 @@
 								"COMP-3910-Assignment-3",
 								"rest",
 								"employees",
-								"5"
+								"4"
 							]
 						}
 					},
@@ -200,6 +270,20 @@
 			"item": [
 				{
 					"name": "Get All Timesheets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "800b5e3a-3ff0-4680-af4a-3b79277f878c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -237,6 +321,20 @@
 				},
 				{
 					"name": "Get Single Timesheet w/ Rows",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c8edeec3-6206-4a9b-a4c2-15b436bff1c8",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -275,6 +373,20 @@
 				},
 				{
 					"name": "Create Timesheet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a11f95b2-00e7-4458-ad61-ae0a4dc2c8aa",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -292,7 +404,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"empNumber\": 2,\n    \"endWeek\": \"Nov 2, 2018\",\n    \"overtime\": 0,\n    \"flextime\": 0,\n    \"timesheetId\": 5\n}"
+							"raw": "{\n    \"empNumber\": 2,\n    \"endWeek\": \"Nov 2, 2018\",\n    \"overtime\": 0,\n    \"flextime\": 0\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets",
@@ -312,6 +424,20 @@
 				},
 				{
 					"name": "Edit Timesheet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2d7f78e7-024a-422c-8755-20bff90a7c74",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -329,10 +455,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"empNumber\": 1,\n        \"endWeek\": \"Nov 18, 2018\",\n        \"overtime\": 0,\n        \"flextime\": 0,\n        \"timesheetId\": 2\n}"
+							"raw": "{\n        \"empNumber\": 1,\n        \"endWeek\": \"Nov 01, 2018\",\n        \"overtime\": 0,\n        \"flextime\": 0,\n        \"timesheetId\": 5\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/2",
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -342,7 +468,7 @@
 								"COMP-3910-Assignment-3",
 								"rest",
 								"timesheets",
-								"2"
+								"5"
 							]
 						}
 					},
@@ -350,6 +476,20 @@
 				},
 				{
 					"name": "Delete Timesheet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eb5e4351-ea7a-4b1e-8774-34d3e37203cb",
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -393,6 +533,20 @@
 			"item": [
 				{
 					"name": "Create Timesheet Row",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3091f396-8495-4138-8efd-d1ae9cb87dc5",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -410,7 +564,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"projectId\": 99,\n    \"workPackage\": \"posty\",\n    \"notes\": \"postman roxx\",\n    \"sunHours\": 0,\n    \"monHours\": 2,\n    \"tueHours\": 1,\n    \"wedHours\": 3,\n    \"thuHours\": 1,\n    \"friHours\": 5,\n    \"satHours\": 0,\n    \"timesheetId\": 232\n}"
+							"raw": "{\n    \"projectId\": 99,\n    \"workPackage\": \"posty\",\n    \"notes\": \"postman roxx\",\n    \"sunHours\": 0,\n    \"monHours\": 2,\n    \"tueHours\": 1,\n    \"wedHours\": 3,\n    \"thuHours\": 1,\n    \"friHours\": 5,\n    \"satHours\": 0,\n    \"timesheetId\": 2\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/row",
@@ -431,6 +585,20 @@
 				},
 				{
 					"name": "Edit Timesheet Row",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b1254ea4-f821-4dbe-96c7-8d27bb40c379",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -448,10 +616,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"projectId\": 77,\n    \"workPackage\": \"test\",\n    \"notes\": \"PUT test\",\n    \"sunHours\": 0,\n    \"monHours\": 2,\n    \"tueHours\": 1,\n    \"wedHours\": 3,\n    \"thuHours\": 4,\n    \"friHours\": 5,\n    \"satHours\": 0,\n    \"timesheetId\": 2,\n    \"timesheetRowId\": 102\n}"
+							"raw": "{\n    \"projectId\": 77,\n    \"workPackage\": \"test\",\n    \"notes\": \"PUT test\",\n    \"sunHours\": 0,\n    \"monHours\": 2,\n    \"tueHours\": 1,\n    \"wedHours\": 3,\n    \"thuHours\": 4,\n    \"friHours\": 5,\n    \"satHours\": 0,\n    \"timesheetId\": 2,\n    \"timesheetRowId\": 92\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/row/102",
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/row/92",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -462,7 +630,7 @@
 								"rest",
 								"timesheets",
 								"row",
-								"102"
+								"92"
 							]
 						}
 					},
@@ -470,6 +638,20 @@
 				},
 				{
 					"name": "Delete Timesheet Row",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bd2bf7d3-f966-43b1-953e-277e3ab0e1b4",
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -490,7 +672,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/row/97",
+							"raw": "http://localhost:8080/COMP-3910-Assignment-3/rest/timesheets/row/92",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -501,7 +683,7 @@
 								"rest",
 								"timesheets",
 								"row",
-								"97"
+								"92"
 							]
 						}
 					},
@@ -518,8 +700,10 @@
 						"id": "bb8a925d-e561-46e8-af91-57d050f00ee9",
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
-							"postman.setEnvironmentVariable(\"token\", jsonData.token);\r",
-							""
+							"pm.globals.set(\"token\", jsonData.token);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -553,6 +737,36 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a3efa1ce-8254-4e16-a807-07d77a2a2ade",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "abe052f6-7f21-447a-b54e-c96a4bc22019",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "3091fa09-351e-473a-94c0-bdc06f0c5800",
+			"value": "",
+			"type": "string",
+			"disabled": true
 		}
 	]
 }

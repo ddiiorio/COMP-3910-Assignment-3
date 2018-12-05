@@ -285,7 +285,7 @@ public class TimesheetService {
         Gson gson = gsonBuilder.create();
         TimesheetRow tsRow = gson.fromJson(payload, TimesheetRow.class);
 
-        if (tsRow.getTimesheetId() != tsRowId) {
+        if (tsRow.getTimesheetRowId() != tsRowId) {
             //invalid put 
             returnCode = "{\"status\":\"400\"," 
             + "\"message\":\"Unable to modify timesheet row id.\"}";
