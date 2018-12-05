@@ -502,6 +502,10 @@ public class TimesheetService {
                 .entity(returnCode).build();
     }
     
+    /**
+     * Deletes all rows for the associated timesheet.
+     * @param id the associated timesheet
+     */
     private void deleteRowsForTimesheet(int id) {
         Query query = em.createQuery(
                 "DELETE FROM com.entity.TimesheetRow WHERE timesheet_id = :tid")
