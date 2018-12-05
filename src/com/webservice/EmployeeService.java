@@ -113,15 +113,23 @@ public class EmployeeService {
             //user is not admin
             return Response.status(Response.Status.FORBIDDEN).build();
         }
+        String returnCode = "";
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         Employees employee = gson.fromJson(payload, Employees.class);
 
+        if (employee.getEmpNumber() != empNumber) {
+            //invalid put 
+            returnCode = "{\"status\":\"400\"," 
+            + "\"message\":\"Unable to modify employee number.\"}";
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(returnCode).build();
+        }
+        
         System.out.println(employee);
         em = Resource.getEntityManager();
         em.getTransaction().begin();
         Employees entity = em.find(Employees.class, empNumber);
-        String returnCode = "";
 
         if (entity == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -139,9 +147,8 @@ public class EmployeeService {
             em.getTransaction().commit();
             em.close();
             returnCode = employee.toString();
-        } catch (WebApplicationException err) {
-            err.printStackTrace();
-            returnCode = "{\"status\":\"500\"," + "\"message\":\"Resource"
+        } catch (IllegalArgumentException err) {
+            returnCode = "{\"status\":\"400\"," + "\"message\":\"Resource"
                     + " not created.\"" + "\"developerMessage\":\""
                     + err.getMessage() + "\"" + "}";
             return Response.status(Response.Status.BAD_REQUEST)
@@ -163,7 +170,6 @@ public class EmployeeService {
     @Produces("application/json")
     public Response createEmployee(String payload, 
             @HeaderParam("token") String token) {
-        System.out.println("payload - " + payload);
         Auth auth = AuthenticationService.verifyToken(token);
         if (auth == null) {
             //failed to authenticate 
@@ -172,12 +178,19 @@ public class EmployeeService {
             //user is not admin
             return Response.status(Response.Status.FORBIDDEN).build();
         }
+        String returnCode = "";
+        
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
-
         Employees employee = gson.fromJson(payload, Employees.class);
-        System.out.println(employee);
-        String returnCode = "200";
+        
+        if (!employeeIsValid(employee)) {
+            //INVALID EMPLOYEE DONT POST
+            returnCode = "{\"status\":\"400\"," + "\"message\":\"Resource"
+                    + " not created.\"}";
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(returnCode).build();
+        }
         em = Resource.getEntityManager();
 
         try {
@@ -189,7 +202,7 @@ public class EmployeeService {
             em.close();
 
             returnCode = employee.toString();
-        } catch (WebApplicationException err) {
+        } catch (IllegalArgumentException err) {
             err.printStackTrace();
             returnCode = "{\"status\":\"400\"," + "\"message\":\"Resource"
                     + " not created.\"" + "\"developerMessage\":\""
@@ -200,6 +213,13 @@ public class EmployeeService {
         }
         return Response.status(Response.Status.CREATED)
                 .entity(returnCode).build();
+    }
+
+    private boolean employeeIsValid(Employees e) {
+        return e.getFirstName() != null
+                && e.getLastName() != null
+                && e.getPassword() != null
+                && e.getUserName() != null;
     }
 
     /**
@@ -235,7 +255,7 @@ public class EmployeeService {
             returnCode = "{" + "\"message\":\"Employee number " 
                     + existingEmployee.getEmpNumber() + "succesfully deleted\""
                     + "}";
-        } catch (WebApplicationException err) {
+        } catch (IllegalArgumentException err) {
             err.printStackTrace();
             returnCode = "{\"status\":\"404\"," + "\"message\":\"Resource"
                     + " not deleted.\"" + "\"developerMessage\":\""
