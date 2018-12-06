@@ -1,12 +1,12 @@
 {
 	"info": {
-		"_postman_id": "1e673ad2-dd12-4daf-b04d-39dc890bb274",
+		"_postman_id": "c8b382d6-ba59-410e-9819-183178093404",
 		"name": "IS Assignment 3",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Authenticate",
+			"name": "Authentication",
 			"item": [
 				{
 					"name": "Login + Get Token",
@@ -768,8 +768,7 @@
 	],
 	"variable": [
 		{
-			"id": "3091fa09-351e-473a-94c0-bdc06f0c5800",
-			"key": "3091fa09-351e-473a-94c0-bdc06f0c5800",
+			"id": "0c30a004-a4b0-47fd-9559-0d5455b37140",
 			"value": "",
 			"type": "string",
 			"disabled": true
