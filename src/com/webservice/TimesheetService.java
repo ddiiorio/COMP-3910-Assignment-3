@@ -452,8 +452,6 @@ public class TimesheetService {
         em.remove(existingTimesheet);
         em.getTransaction().commit();
         em.close();
-        returnCode = "{" + "\"message\":\"Timesheet succesfully"
-                + " deleted\"" + "}";
         
         return Response.status(Response.Status.NO_CONTENT)
                 .entity(returnCode).build();
@@ -470,7 +468,7 @@ public class TimesheetService {
     @Consumes("application/json")
     @Produces("application/json")
     @Path("row/{rowId}")
-    public Response deleteEmployee(@PathParam("rowId") int timesheetRowId, 
+    public Response deleteRow(@PathParam("rowId") int timesheetRowId, 
             @HeaderParam("token") String token) {
         
         Auth auth = AuthenticationService.verifyToken(token);
@@ -490,9 +488,6 @@ public class TimesheetService {
             em.remove(sheet);
             em.getTransaction().commit();
             em.close();
-            returnCode = "{" + "\"message\":\"Timesheet Row " 
-                    + sheet.getTimesheetId() + "succesfully deleted\""
-                    + "}";
         } catch (IllegalArgumentException err) {
             err.printStackTrace();
             returnCode = "{\"status\":\"404\"," + "\"message\":\"Resource"
