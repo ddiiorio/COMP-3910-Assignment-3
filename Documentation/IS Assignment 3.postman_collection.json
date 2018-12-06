@@ -1,10 +1,62 @@
 {
 	"info": {
-		"_postman_id": "c8b382d6-ba59-410e-9819-183178093404",
+		"_postman_id": "1e673ad2-dd12-4daf-b04d-39dc890bb274",
 		"name": "IS Assignment 3",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Authenticate",
+			"item": [
+				{
+					"name": "Login + Get Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bb8a925d-e561-46e8-af91-57d050f00ee9",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.globals.set(\"token\", jsonData.token);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\" : \"tonyp\" ,\n\t\"password\" : \"pass\"\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/COMP-3910-Assignment-3/rest/auth",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"COMP-3910-Assignment-3",
+								"rest",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "Employees",
 			"item": [
@@ -690,53 +742,6 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "Login + Get Token",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "bb8a925d-e561-46e8-af91-57d050f00ee9",
-						"exec": [
-							"var jsonData = JSON.parse(responseBody);\r",
-							"pm.globals.set(\"token\", jsonData.token);\r",
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"username\" : \"tonyp\" ,\n\t\"password\" : \"pass\"\n}"
-				},
-				"url": {
-					"raw": "localhost:8080/COMP-3910-Assignment-3/rest/auth",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"COMP-3910-Assignment-3",
-						"rest",
-						"auth"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"event": [
@@ -764,6 +769,7 @@
 	"variable": [
 		{
 			"id": "3091fa09-351e-473a-94c0-bdc06f0c5800",
+			"key": "3091fa09-351e-473a-94c0-bdc06f0c5800",
 			"value": "",
 			"type": "string",
 			"disabled": true
