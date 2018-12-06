@@ -124,7 +124,6 @@ public class EmployeeService {
                     .entity(returnCode).build();
         }
         
-        System.out.println(employee);
         em = Resource.getEntityManager();
         em.getTransaction().begin();
         Employees entity = em.find(Employees.class, empNumber);
@@ -181,6 +180,15 @@ public class EmployeeService {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         Employees employee = gson.fromJson(payload, Employees.class);
+        em = Resource.getEntityManager();
+        
+        if (usernameExists(employee.getUserName())) {
+            //Employee username already exists, DONT POST
+            returnCode = "{\"status\":\"400\"," + "\"message\":\"Resource"
+                    + " not created, username must be unique.\"}";
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(returnCode).build();
+        }
         
         if (!employeeIsValid(employee)) {
             //INVALID EMPLOYEE DONT POST
@@ -189,7 +197,6 @@ public class EmployeeService {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(returnCode).build();
         }
-        em = Resource.getEntityManager();
 
         try {
             em.getTransaction().begin();
@@ -211,6 +218,20 @@ public class EmployeeService {
         }
         return Response.status(Response.Status.CREATED)
                 .entity(returnCode).build();
+    }
+    
+    /**
+     * Checks if username of employee being added is already in use.
+     * @param username new username
+     * @return true or false
+     */
+    private boolean usernameExists(String username) {
+        Query query = em.createQuery(
+                "FROM com.entity.Employees WHERE username = :un")
+                .setParameter("un", username);
+        List<Employees> empList = Resource.castList(Employees.class, 
+                query.getResultList());
+        return (empList.size() != 0);
     }
 
     /**
